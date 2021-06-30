@@ -1,0 +1,25 @@
+{
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "node-sass": "^6.0.1",
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.5",
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vue/compiler-sfc": "^3.0.5",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.0",
+    "node-sass": "^6.0.1",
+    "sass-loader": "^12.1.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.3.8",
+    "vue-tsc": "^0.0.24"
+  }
+}
