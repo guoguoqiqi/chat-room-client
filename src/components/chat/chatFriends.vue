@@ -10,7 +10,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
-import { avatar1 } from '../common/constant'
+import { avatar1 } from '../../common/constant'
 
 export default defineComponent({
   setup() {

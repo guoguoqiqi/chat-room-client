@@ -6,7 +6,13 @@ export default defineConfig({
   server: {
     port: 3355,
     open: true,
-    https: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3322/nest-demo-01/',
+        changeOrigin: true,
+        rewrite: (pathStr) => pathStr.replace('/api', '')
+      }
+    }
   },
   plugins: [
     vue(),

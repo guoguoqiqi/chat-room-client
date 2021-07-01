@@ -12,10 +12,10 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import chatFriends from '@/components/chatFriends.vue'
-import chatUserCard from '@/components/chatUserCard.vue'
-import chatMessage from '@/components/chatMessage.vue'
-import chatInput from '@/components/chatInput.vue'
+import chatFriends from '@/components/chat/chatFriends.vue'
+import chatUserCard from '@/components/chat/chatUserCard.vue'
+import chatMessage from '@/components/chat/chatMessage.vue'
+import chatInput from '@/components/chat/chatInput.vue'
 export default defineComponent({
   setup() {},
   components: {
