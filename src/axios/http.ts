@@ -57,40 +57,46 @@ const service = axios.create({
 })
 
 // 请求拦截器
-service.interceptors.request.use((config: AxiosRequestConfig) => {
-  let token = localStorage.getItem('token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+service.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
+    let token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config
+  },
+  (error) => {
+    error.data = {}
+    error.data.msg = '服务器异常，请联系管理员！'
+    return Promise.reject(error)
   }
-  return config
-}, (error) => {
-  error.data = {}
-  error.data.msg = '服务器异常，请联系管理员！'
-  return Promise.reject(error)
-})
+)
 
 // 响应拦截器
-service.interceptors.response.use((response: AxiosResponse) => {
-  const status = response.status
-  let msg = ''
-  if (status < 200 || status >= 300) {
-    msg = showStatus(status)
-    if (typeof response.data === 'string') {
-      response.data = { msg }
-    } else {
-      response.data.msg = msg
+service.interceptors.response.use(
+  (response: AxiosResponse) => {
+    const status = response.status
+    let msg = ''
+    if (status < 200 || status >= 300) {
+      msg = showStatus(status)
+      if (typeof response.data === 'string') {
+        response.data = { msg }
+      } else {
+        response.data.msg = msg
+      }
     }
+    return response
+  },
+  (error) => {
+    if (axios.isCancel(error)) {
+      console.log('repeated request: ' + error.message)
+    } else {
+      error.data = {}
+      error.data.msg = '请求超时或服务器异常，请检查网络或联系管理员！'
+      AtdMessage.error(error.data.msg)
+    }
+    return Promise.reject(error)
   }
-  return response
-}, (error) => {
-  if (axios.isCancel(error)) {
-    console.log('repeated request: ' + error.message)
-  } else {
-    error.data = {}
-    error.data.msg = '请求超时或服务器异常，请检查网络或联系管理员！'
-    AtdMessage.error(error.data.msg)
-  }
-  return Promise.reject(error)
-})
+)
 
 export default service

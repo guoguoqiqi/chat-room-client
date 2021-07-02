@@ -1,3 +1,5 @@
+import { GetMessageBody, UserInfo } from "../common/constant";
+
 // 根Store
 export default interface RootStateInterface {
   language: string,
@@ -10,9 +12,10 @@ export interface AllStateTypes extends RootStateInterface {
 }
 
 export interface UserModuleState {
-  userName: string,
-  userInfo: object,
+  realName: string,
+  userInfo: UserInfo | object,
   token: string
+  messageList: Array<GetMessageBody>
 }
 
 export interface AppModuleState {

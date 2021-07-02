@@ -16,5 +16,5 @@ app.use(router).use(Antd).use(store, key)
 // 注册全局组件
 app.component('ChatModal', ChatModal)
 
-// app.config.globalProperties.systemName = '猎码士' // 全局挂载
+// app.config.globalProperties.systemName = 'mangguopi' // 全局挂载
 app.mount('#app')

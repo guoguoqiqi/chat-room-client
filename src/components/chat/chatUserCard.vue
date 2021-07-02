@@ -2,7 +2,7 @@
   <div class="m-card">
     <header>
       <img class="avatar" width="50" height="50" :src="avatar2">
-      <p class="name">名字</p>
+      <p class="name">{{realName}}</p>
     </header>
     <footer>
       <input class="search" type="text" placeholder="search friends...">
@@ -10,13 +10,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from '@/store/index'
 
 import { avatar2 } from '../../common/constant'
 
 export default defineComponent({
   setup() {
+    const store = useStore()
+    const realName = computed(() => store.state.user.realName)
+
     return {
+      realName,
       avatar2,
     }
   },

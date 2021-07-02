@@ -1,55 +1,88 @@
 <template>
   <div class="m-message">
     <ul>
-      <li v-for="item in session.messages" :key="item.date">
-        <p class="time"><span>时间</span></p>
-        <div class="main" :class="{ self: item.self }">
-          <!-- <img class="avatar" width="30" height="30" :src="item | avatar" /> -->
-          <div class="text">消息</div>
+      <li v-for="item in messageList" :key="item.account_name">
+        <p class="time"><span>{{item.create_time}}</span></p>
+        <div class="main" :class="{ self: item.account_name === acountName }">
+          <img class="avatar" width="30" height="30" :src="avatar1" />
+          <div class="text">{{item.message_value}}</div>
         </div>
       </li>
     </ul>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { computed, defineComponent, onMounted, nextTick } from 'vue'
+import { useStore } from '@/store/index'
+
+import { avatar1 } from '@/common/constant'
+import { UserInfo } from '@/common/constant'
+import { renderTime, scrollToBottom } from '@/common/utils'
 
 export default defineComponent({
   setup() {
-    const session = reactive({
-      messages: [
-        {
-          date: '',
-          self: '',
-        },
-      ],
+    const store = useStore()
+
+    const acountName = computed(() => {
+      return (store.state.user.userInfo as UserInfo).username
+    })
+    const messageList = computed(() => {
+      nextTick(() => {
+        scrollToBottom()
+      })
+      store.state.user.messageList.map(
+        (item) => (item.create_time = renderTime(item.create_time))
+      )
+      return store.state.user.messageList
     })
 
+    // 获取最近记录
+    store.dispatch('user/GET_ALL_MESSAGE_LIST')
+
     return {
-      session,
+      acountName,
+      messageList,
+      avatar1,
     }
   },
 })
 </script>
 <style lang="less">
 .m-message {
+  height: 300px;
   padding: 10px 15px;
   overflow-y: scroll;
-
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgb(239, 239, 239);
+    border-radius: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #bfbfbf;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgb(145, 144, 144);
+  }
+  &::-webkit-scrollbar-corner {
+    background: #179a16;
+  }
   li {
     margin-bottom: 15px;
   }
   .time {
     margin: 7px 0;
     text-align: center;
-
     > span {
       display: inline-block;
       padding: 0 18px;
       font-size: 12px;
       color: #fff;
-      border-radius: 2px;
       background-color: #dcdcdc;
+      border-radius: 2px;
     }
   }
   .avatar {
@@ -60,16 +93,15 @@ export default defineComponent({
   .text {
     display: inline-block;
     position: relative;
-    padding: 0 10px;
     max-width: ~'calc(100% - 40px)';
     min-height: 30px;
-    line-height: 2.5;
+    padding: 0 10px;
     font-size: 12px;
+    line-height: 2.5;
     text-align: left;
-    word-break: break-all;
     background-color: #fafafa;
+    word-break: break-all;
     border-radius: 4px;
-
     &:before {
       content: ' ';
       position: absolute;
@@ -79,17 +111,14 @@ export default defineComponent({
       border-right-color: #fafafa;
     }
   }
-
   .self {
     text-align: right;
-
     .avatar {
       float: right;
       margin: 0 0 0 10px;
     }
     .text {
       background-color: #b2e281;
-
       &:before {
         right: inherit;
         left: 100%;
@@ -99,4 +128,5 @@ export default defineComponent({
     }
   }
 }
+
 </style>
