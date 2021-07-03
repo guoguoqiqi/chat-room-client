@@ -27,3 +27,29 @@ ul {
   height: 600px;
   margin: 20px auto;
 }
+@keyframes stream {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+.vip-font-color {
+  background-image: -webkit-linear-gradient(left,
+  green,
+  yellow,
+  pink,
+  blue,
+  red 25%,
+  green 35%,
+  blue 50%,
+  yellow 60%,
+  red 75%,
+  pink 85%,
+  blue 100%);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  animation: stream 15s infinite linear;
+  background-size: 200% 100%;
+}

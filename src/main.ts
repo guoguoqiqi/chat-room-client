@@ -13,6 +13,7 @@ import ChatModal from '@/components/common/modal.vue'
 const app = createApp(App)
 
 app.use(router).use(Antd).use(store, key)
+
 // 注册全局组件
 app.component('ChatModal', ChatModal)
 

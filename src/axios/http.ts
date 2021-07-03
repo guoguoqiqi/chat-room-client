@@ -44,7 +44,10 @@ const showStatus = (status: number) => {
 }
 
 const service = axios.create({
-  baseURL: '/api',
+  // baseURL: '/api',
+  baseURL: process.env.NODE_ENV === 'development'
+    ? 'http://localhost:18303/nest-demo-01/'
+    : 'http://www.hgqweb.cn:18303/nest-demo-01',
   headers: {
     get: {
       'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -76,6 +79,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const status = response.status
+    console.log(response, 'response.data.msg')
     let msg = ''
     if (status < 200 || status >= 300) {
       msg = showStatus(status)
@@ -91,6 +95,7 @@ service.interceptors.response.use(
     if (axios.isCancel(error)) {
       console.log('repeated request: ' + error.message)
     } else {
+      console.log(error.code)
       error.data = {}
       error.data.msg = '请求超时或服务器异常，请检查网络或联系管理员！'
       AtdMessage.error(error.data.msg)

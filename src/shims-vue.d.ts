@@ -3,3 +3,13 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+declare module 'socket.io-client'
+
+type ioCb = (message: any) => void
+type ioReturnObject = {
+  on: (eventName: string, cb: ioCb) => void,
+  emit: (eventName: string, message: any) => void,
+}
+
+declare function io(uri: string): ioReturnObject

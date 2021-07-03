@@ -5,16 +5,22 @@
         <p class="time"><span>{{item.create_time}}</span></p>
         <div class="main" :class="{ self: item.account_name === acountName }">
           <img class="avatar" width="30" height="30" :src="avatar1" />
-          <div class="text">{{item.message_value}}</div>
+          <div class="name"><span :class="{'vip-font-color': vipFontColor}">{{item.real_name}}</span></div>
+          <div class="text"><span :class="{'vip-font-color': vipFontColor}">{{item.message_value}}</span></div>
         </div>
       </li>
     </ul>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, nextTick } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  nextTick,
+  onBeforeUnmount,
+} from 'vue'
 import { useStore } from '@/store/index'
-
 import { avatar1 } from '@/common/constant'
 import { UserInfo } from '@/common/constant'
 import { renderTime, scrollToBottom } from '@/common/utils'
@@ -25,6 +31,12 @@ export default defineComponent({
 
     const acountName = computed(() => {
       return (store.state.user.userInfo as UserInfo).username
+    })
+    const realName = computed(() => {
+      return (store.state.user.userInfo as UserInfo).realName
+    })
+    const vipFontColor = computed(() => {
+      return store.state.app.appSetting.vipFontColor
     })
     const messageList = computed(() => {
       nextTick(() => {
@@ -37,10 +49,26 @@ export default defineComponent({
     })
 
     // 获取最近记录
-    store.dispatch('user/GET_ALL_MESSAGE_LIST')
+    store.dispatch('user/getAllMessageList')
+
+    // 初始化SocketIO
+    store.dispatch('user/initSocketIO')
+
+    onMounted(() => {})
+
+    onBeforeUnmount(() => {
+      // chatWebSocket.leaveRoom({
+      //   account_name: acountName.value,
+      //   real_name: realName.value,
+      //   message_origin: MessageOrigin.USER_MSG,
+      //   message_type: MessageType.TEXT_MSG,
+      //   message_value: realName.value + '离开房间',
+      // })
+    })
 
     return {
       acountName,
+      vipFontColor,
       messageList,
       avatar1,
     }
@@ -85,8 +113,13 @@ export default defineComponent({
       border-radius: 2px;
     }
   }
+  .name {
+    font-size: 12px;
+  }
   .avatar {
     float: left;
+    width: 32px;
+    height: 32px;
     margin: 0 10px 0 0;
     border-radius: 3px;
   }
@@ -96,7 +129,7 @@ export default defineComponent({
     max-width: ~'calc(100% - 40px)';
     min-height: 30px;
     padding: 0 10px;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 2.5;
     text-align: left;
     background-color: #fafafa;

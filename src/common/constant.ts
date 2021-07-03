@@ -42,3 +42,13 @@ export interface UserInfo {
   username: string
   mobile: string
 }
+
+export interface AppSetting {
+  vipFontColor: boolean
+}
+
+
+export const ENV_APP_DATA = {
+  DEV_APP_WEB_URL: 'http://localhost:18303',
+  PRO_APP_WEB_URL: 'http://www.hgqweb.cn:18303'
+}

@@ -5,7 +5,7 @@
       <p class="name">{{realName}}</p>
     </header>
     <footer>
-      <input class="search" type="text" placeholder="search friends...">
+      <input class="search" type="text" placeholder="search">
     </footer>
   </div>
 </template>
@@ -34,7 +34,8 @@ export default defineComponent({
   footer {
     margin-top: 10px;
   }
-  .avatar, .name {
+  .avatar,
+  .name {
     vertical-align: middle;
   }
   .avatar {
@@ -58,5 +59,4 @@ export default defineComponent({
     border-radius: 4px;
   }
 }
-
 </style>

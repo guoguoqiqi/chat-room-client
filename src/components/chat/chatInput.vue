@@ -24,7 +24,12 @@ export default defineComponent({
     const store = useStore()
     const message = ref('猥琐发育别浪!!!')
     const sendMessage = (event: KeyboardEvent | MouseEvent) => {
-      if (!message.value) {
+      if (
+        !message.value &&
+        event instanceof KeyboardEvent &&
+        event.keyCode === 13
+      ) {
+        event.preventDefault()
         AtdMessage.warn('发送内容为空')
         return
       }
@@ -52,7 +57,8 @@ export default defineComponent({
     const pushMessage = async (myMessage: pushMessageParams) => {
       const httpResult = await chatServerApi.pushMessage(myMessage)
       if (httpResult.data.code === 200) {
-        store.commit('user/ADD_MESSAGELIST', myMessage)
+        store.dispatch('user/sendMessage', myMessage)
+        // store.commit('user/ADD_MESSAGELIST', myMessage)
         message.value = ''
         scrollToBottom()
       }

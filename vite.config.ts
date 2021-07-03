@@ -3,12 +3,18 @@ import vue from '@vitejs/plugin-vue'
 import path from "path"
 
 export default defineConfig({
+  base: '/vue3-h5/chat-room/',
+  define: {
+    'process.env': process.env
+  },
   server: {
     port: 3355,
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3322/nest-demo-01/',
+        target: process.env.NODE_ENV === 'development'
+          ? 'http://localhost:18303/nest-demo-01/'
+          : 'http://www.hgqweb.cn:18303/nest-demo-01',
         changeOrigin: true,
         rewrite: (pathStr) => pathStr.replace('/api', '')
       }

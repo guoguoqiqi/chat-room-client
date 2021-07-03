@@ -9,6 +9,8 @@
     "ant-design-vue": "^2.2.0-rc.1",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
+    "socket.io": "^4.1.2",
+    "socket.io-client": "^2.3.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.10",
     "vuex": "^4.0.2"
@@ -16,6 +18,7 @@
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
     "@types/node": "^15.12.5",
+    "@types/socket.io-client": "^3.0.0",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.5",
     "less": "^4.1.1",

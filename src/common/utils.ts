@@ -1,11 +1,5 @@
 export const scrollToBottom = () => {
   const messageContainer = document.querySelector('.m-message') as HTMLElement
-
-  console.log(messageContainer, 'messageContainer')
-  console.log(messageContainer.scrollTop, 'messageContainer')
-  console.log(messageContainer.scrollHeight, 'messageContainer')
-
-
   messageContainer.scrollTop = messageContainer.scrollHeight
 }
 

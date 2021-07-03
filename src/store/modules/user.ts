@@ -1,6 +1,8 @@
 import { Module } from "vuex";
-import { chatServerApi } from '../../axios/api'
+import { chatServerApi } from '@/axios/api'
+import { message as AtdMessage } from 'ant-design-vue'
 import RootStateInterface, { UserModuleState } from "../types";
+import { ENV_APP_DATA, MessageOrigin, MessageType, UserInfo } from "@/common/constant";
 
 const userModule: Module<UserModuleState, RootStateInterface> = {
   namespaced: true,
@@ -8,7 +10,8 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
     realName: '',
     userInfo: {},
     token: '',
-    messageList: []
+    messageList: [],
+    socket: null
   },
   getters: {
     realName: (state) => state.realName,
@@ -34,14 +37,17 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
     ADD_MESSAGELIST: (state, val) => {
       state.messageList.push(val)
     },
+    SET_SOCKET: (state, val) => {
+      state.socket = val
+    },
   },
   actions: {
-    SET_REAL_NAME_ASYNC: (context, val) => {
+    setRealNameAsync: (context, val) => {
       setTimeout(() => {
         context.commit('SET_REAL_NAME', val)
       }, 0);
     },
-    SIGN_OUT: (context) => {
+    signOut: (context) => {
       context.commit('SET_TOKEN', '')
       context.commit('SET_REAL_NAME', '')
       context.commit('SET_USER_INFO', null)
@@ -49,13 +55,12 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
       localStorage.removeItem('realName')
       localStorage.removeItem('userInfo')
     },
-    GET_ALL_MESSAGE_LIST: (context) => {
-      // 默认获取最新十条记录
+    getAllMessageList: (context) => {
+      // 默认获取最新百条记录(后续分页)
       chatServerApi.getChatRecord({
         pageIndex: 1,
-        pageSize: 10
+        pageSize: 100
       }).then(res => {
-        console.log(res)
         const httpResult = res.data
         if (httpResult.code === 200) {
           context.commit('SET_MESSAGELIST', httpResult.row)
@@ -64,7 +69,59 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
         console.log(err)
 
       })
-    }
+    },
+    // 初始化SocketIO
+    initSocketIO: ({ commit, state, dispatch, rootState }) => {
+      const socketiIoUrl =
+        process.env.NODE_ENV === 'development'
+          ? ENV_APP_DATA['DEV_APP_WEB_URL']
+          : ENV_APP_DATA['PRO_APP_WEB_URL']
+
+      try {
+        const socket = io(socketiIoUrl + '/chat')
+        const accountName = (state.userInfo as UserInfo).username
+        const realName = (state.userInfo as UserInfo).realName
+
+        socket.emit('enterRoom', {
+          account_name: accountName,
+          real_name: realName,
+          message_origin: MessageOrigin.USER_MSG,
+          message_type: MessageType.TEXT_MSG,
+          message_value: (state.userInfo as UserInfo).realName + '进入房间',
+        })
+
+        // 监听用户发的消息
+        socket.on('sendMessage', (message: any) => {
+          commit('ADD_MESSAGELIST', message)
+        });
+
+        // 监听用户进入房间
+        socket.on('enteredRoom', (message: any) => {
+          commit('SET_SOCKET', socket)
+          if (message.account_name !== accountName) {
+            AtdMessage.info(message.message_value)
+          }
+        });
+
+        // 监听用户离开房间
+        socket.on('leavedRoom', (message: any) => {
+          console.log(message)
+          AtdMessage.info(message.message_value)
+        });
+
+      } catch (error) {
+        console.log(error)
+        AtdMessage.error('服务器异常！')
+      }
+
+    },
+    sendMessage: ({ commit, state }, val) => {
+      try {
+        state.socket.emit('sendMessage', val)
+      } catch (error) {
+        console.log(error)
+      }
+    },
   }
 }
 
