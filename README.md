@@ -10,8 +10,8 @@ Vue3最新全家桶搭建的一个聊天室，不断完善中
 
 + 数据持久化，已存储至数据库
 
-+ 正在开发一对一聊天、群组聊天、发送图片文件音视频文件等、权限验证等
++ 正在开发一对一聊天、添加好友、创建群组、群组聊天、发送图片文件音视频文件等、权限验证等
 
 ## 在线地址
 
-[在线体验](http://www.hgqweb.cn/vue3-h5/chat-room/index.html#/){target="_blank"}
+<a href="http://www.hgqweb.cn/vue3-h5/chat-room/index.html#/" target="_blank">在线体验</a>
