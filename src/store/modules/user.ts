@@ -60,10 +60,10 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
       localStorage.removeItem('userInfo')
     },
     getAllMessageList: (context) => {
-      // 默认获取最新百条记录(后续分页)
+      // 默认获取最新千条记录(后续分页)
       chatServerApi.getChatRecord({
         pageIndex: 1,
-        pageSize: 100
+        pageSize: 1000
       }).then(res => {
         const httpResult = res.data
         if (httpResult.code === 200) {
