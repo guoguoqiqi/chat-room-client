@@ -21,9 +21,8 @@ import {
   onBeforeUnmount,
 } from 'vue'
 import { useStore } from '@/store/index'
-import { avatar1 } from '@/common/constant'
-import { UserInfo } from '@/common/constant'
-import { renderTime, scrollToBottom } from '@/common/utils'
+import { avatar1, UserInfo } from '@/common/constant'
+import { getNowTime, renderTime, scrollToBottom } from '@/common/utils'
 
 export default defineComponent({
   setup() {
@@ -42,9 +41,11 @@ export default defineComponent({
       nextTick(() => {
         scrollToBottom()
       })
-      store.state.user.messageList.map(
-        (item) => (item.create_time = renderTime(item.create_time))
-      )
+      store.state.user.messageList.map((item) => {
+        item.create_time = item.create_time
+          ? renderTime(item.create_time)
+          : getNowTime('yyyy-MM-dd HH:mm:ss')
+      })
       return store.state.user.messageList
     })
 
@@ -161,5 +162,4 @@ export default defineComponent({
     }
   }
 }
-
 </style>

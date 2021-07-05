@@ -9,6 +9,7 @@
     "ant-design-vue": "^2.2.0-rc.1",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
+    "emoji-mart-vue-fast": "^10.0.1",
     "socket.io": "^4.1.2",
     "socket.io-client": "^2.3.0",
     "vue": "^3.0.5",

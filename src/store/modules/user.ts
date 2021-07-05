@@ -1,6 +1,6 @@
 import { Module } from "vuex";
 import { chatServerApi } from '@/axios/api'
-import { message as AtdMessage } from 'ant-design-vue'
+import { message as AtdMessage, message } from 'ant-design-vue'
 import RootStateInterface, { UserModuleState } from "../types";
 import { ENV_APP_DATA, MessageOrigin, MessageType, UserInfo } from "@/common/constant";
 
@@ -11,7 +11,8 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
     userInfo: {},
     token: '',
     messageList: [],
-    socket: null
+    socket: null,
+    onlineNumber: 0
   },
   getters: {
     realName: (state) => state.realName,
@@ -39,6 +40,9 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
     },
     SET_SOCKET: (state, val) => {
       state.socket = val
+    },
+    SET_ONLINENUMBER: (state, val) => {
+      state.onlineNumber = val
     },
   },
   actions: {
@@ -88,6 +92,11 @@ const userModule: Module<UserModuleState, RootStateInterface> = {
           message_origin: MessageOrigin.USER_MSG,
           message_type: MessageType.TEXT_MSG,
           message_value: (state.userInfo as UserInfo).realName + '进入房间',
+        })
+
+        // 监听在线人数
+        socket.on('onlineNumberChange', (message: any) => {
+          commit('SET_ONLINENUMBER', JSON.parse(message.message_value).onlineNumber)
         })
 
         // 监听用户发的消息

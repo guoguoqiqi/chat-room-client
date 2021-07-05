@@ -4,6 +4,7 @@
       <chat-user-card></chat-user-card>
       <chat-friends></chat-friends>
       <UnorderedListOutlined @click="customAppSetting" />
+      <div class="online-number">[在线人数: {{onlineNumber}}]</div>
     </div>
     <div class="main">
       <chat-message></chat-message>
@@ -13,7 +14,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import chatFriends from '@/components/chat/chatFriends.vue'
 import chatUserCard from '@/components/chat/chatUserCard.vue'
 import chatMessage from '@/components/chat/chatMessage.vue'
@@ -24,11 +25,16 @@ import appSetting from '@/components/appSetting.vue'
 export default defineComponent({
   setup() {
     const store = useStore()
+    const onlineNumber = computed(() => {
+      return store.state.user.onlineNumber
+    })
+
     const customAppSetting = () => {
       store.commit('app/SET_APP_SETTING_VISIBLE', true)
     }
 
     return {
+      onlineNumber,
       customAppSetting,
     }
   },
@@ -46,7 +52,8 @@ export default defineComponent({
 #chat {
   overflow: hidden;
   border-radius: 3px;
-  .sidebar, .main {
+  .sidebar,
+  .main {
     height: 100%;
   }
   .sidebar {
@@ -61,6 +68,12 @@ export default defineComponent({
     bottom: 12px;
     left: 12px;
     cursor: pointer;
+  }
+  .sidebar .online-number {
+    position: absolute;
+    bottom: 10px;
+    left: 32px;
+    color: #3bef3b;
   }
   .main {
     position: relative;
@@ -77,5 +90,4 @@ export default defineComponent({
     height: ~'calc(100% - 160px)';
   }
 }
-
 </style>

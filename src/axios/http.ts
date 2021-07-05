@@ -1,5 +1,6 @@
 import { message as AtdMessage } from "ant-design-vue"
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import router from "@/router";
 
 const showStatus = (status: number) => {
   let message = ''
@@ -8,7 +9,7 @@ const showStatus = (status: number) => {
       message = '请求错误(400)'
       break
     case 401:
-      message = '未授权，请重新登录(401)'
+      message = '未授权或授权过期，将重新登录(401)'
       break
     case 403:
       message = '拒绝访问(403)'
@@ -37,14 +38,16 @@ const showStatus = (status: number) => {
     case 505:
       message = 'HTTP版本不受支持(505)'
       break
+    case 600:
+      message = '查无此人(600)'
+      break
     default:
-      message = `连接出错(${status})!`
+      message = `连接出错(${status})`
   }
-  return `${message}，请检查网络或联系管理员！`
+  return `${message}`
 }
 
 const service = axios.create({
-  // baseURL: '/api',
   baseURL: process.env.NODE_ENV === 'development'
     ? 'http://localhost:18303/nest-demo-01/'
     : 'http://www.hgqweb.cn:18303/nest-demo-01',
@@ -78,8 +81,8 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
+    console.log(response, 'response')
     const status = response.status
-    console.log(response, 'response.data.msg')
     let msg = ''
     if (status < 200 || status >= 300) {
       msg = showStatus(status)
@@ -92,13 +95,22 @@ service.interceptors.response.use(
     return response
   },
   (error) => {
+    console.log(error, 'error')
     if (axios.isCancel(error)) {
       console.log('repeated request: ' + error.message)
     } else {
-      console.log(error.code)
       error.data = {}
-      error.data.msg = '请求超时或服务器异常，请检查网络或联系管理员！'
+      error.data.msg = showStatus(error.response.data.statusCode)
       AtdMessage.error(error.data.msg)
+
+      // 授权过期自动跳转登录
+      if (error.response.data.statusCode === 401) {
+        setTimeout(() => {
+          router.push({
+            name: 'Login'
+          })
+        }, 1500);
+      }
     }
     return Promise.reject(error)
   }

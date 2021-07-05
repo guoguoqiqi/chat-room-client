@@ -96,7 +96,7 @@ export default defineComponent({
       if (httpRequest.data.code === 200) {
         const encryptText: string = encrypt(
           JSON.stringify({
-            accountName: formState.accountName,
+            username: formState.accountName,
             password: formState.password,
           })
         )
@@ -133,6 +133,5 @@ export default defineComponent({
   width: 500px;
   margin: 50px auto;
 }
-
 </style>
 

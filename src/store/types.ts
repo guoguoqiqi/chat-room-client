@@ -17,6 +17,7 @@ export interface UserModuleState {
   token: string
   messageList: Array<GetMessageBody>
   socket: any
+  onlineNumber: number
 }
 
 export interface AppModuleState {

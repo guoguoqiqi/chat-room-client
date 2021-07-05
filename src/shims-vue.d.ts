@@ -5,6 +5,7 @@ declare module '*.vue' {
 }
 
 declare module 'socket.io-client'
+declare module 'emoji-mart-vue-fast/src'
 
 type ioCb = (message: any) => void
 type ioReturnObject = {

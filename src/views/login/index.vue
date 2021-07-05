@@ -61,7 +61,6 @@ export default defineComponent({
     const rememberAcount = ref(false)
 
     watch(rememberAcount, (newValue, preValue) => {
-      console.log(newValue, preValue)
       if (newValue) {
         localStorage.setItem('isRememberAcount', 'remembered')
       } else {
@@ -244,6 +243,5 @@ export default defineComponent({
     }
   }
 }
-
 </style>
 
