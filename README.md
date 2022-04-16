@@ -14,4 +14,4 @@ Vue3最新全家桶搭建的一个聊天室，不断完善中
 
 ## 在线地址
 
-<a href="http://www.hgqweb.cn/vue3-h5/chat-room/index.html#/" target="_blank">在线体验</a>
+<a href="http://106.55.228.251:30281/#/" target="_blank">在线体验</a>
