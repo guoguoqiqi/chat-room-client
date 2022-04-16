@@ -1,5 +1,10 @@
 <template>
-  <a-form layout="horizontal" :model="formState" @finish="handleFinish" id="login-form-box">
+  <a-form
+    layout="horizontal"
+    :model="formState"
+    @finish="handleFinish"
+    id="login-form-box"
+  >
     <a-form-item>
       <a-input v-model:value="formState.username" placeholder="Username">
         <template #prefix>
@@ -8,7 +13,11 @@
       </a-input>
     </a-form-item>
     <a-form-item>
-      <a-input v-model:value="formState.password" type="password" placeholder="Password">
+      <a-input
+        v-model:value="formState.password"
+        type="password"
+        placeholder="Password"
+      >
         <template #prefix>
           <LockOutlined style="color: rgba(0, 0, 0, 0.25)" />
         </template>
@@ -18,7 +27,12 @@
       <a-checkbox v-model:checked="rememberAcount">记住密码</a-checkbox>
     </a-form-item>
     <a-form-item>
-      <a-button type="primary" html-type="submit" :disabled="!submitDisabled" block>
+      <a-button
+        type="primary"
+        html-type="submit"
+        :disabled="!submitDisabled"
+        block
+      >
         登录
       </a-button>
       <div class="register-btn" @click="enterPage('Register')">
@@ -32,92 +46,97 @@
   </a-form>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
-import { encrypt, decrypt } from '@/common/crypto'
-import { message } from 'ant-design-vue'
-import { useStore } from '@/store/index'
-import { useRouter } from 'vue-router'
-import { chatServerApi } from '@/axios/api'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
+import { encrypt, decrypt } from "@/common/crypto";
+import { message } from "ant-design-vue";
+import { useStore } from "@/store/index";
+import { useRouter } from "vue-router";
+import { chatServerApi } from "@/axios/api";
 
 interface FormState {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
 export default defineComponent({
   setup() {
-    const router = useRouter()
-    const store = useStore()
+    const router = useRouter();
+    const store = useStore();
 
     const formState: FormState = reactive({
-      username: '',
-      password: '',
-    })
+      username: "",
+      password: "",
+    });
 
     const submitDisabled = computed(() => {
-      return formState.username && formState.password
-    })
+      return formState.username && formState.password;
+    });
 
-    const rememberAcount = ref(false)
+    const rememberAcount = ref(false);
 
     watch(rememberAcount, (newValue, preValue) => {
       if (newValue) {
-        localStorage.setItem('isRememberAcount', 'remembered')
+        localStorage.setItem("isRememberAcount", "remembered");
       } else {
-        localStorage.removeItem('isRememberAcount')
+        localStorage.removeItem("isRememberAcount");
       }
-    })
+    });
 
     onMounted(() => {
-      const isRememberAcount = localStorage.getItem('isRememberAcount')
+      const isRememberAcount = localStorage.getItem("isRememberAcount");
       if (isRememberAcount) {
         const decryptText = JSON.parse(
-          decrypt(localStorage.getItem('encryptText') as string)
-        )
-
-        formState.username = decryptText.username
-        formState.password = decryptText.password
-
-        rememberAcount.value = true
+          decrypt(localStorage.getItem("encryptText") as string)
+        );
+        formState.username = decryptText.username;
+        formState.password = decryptText.password;
+        rememberAcount.value = true;
       }
-    })
+    });
 
     const handleFinish = async () => {
       const httpRequest = await chatServerApi.login({
         username: formState.username,
         password: formState.password,
-      })
-      console.log(httpRequest, 'login')
+      });
+      console.log(httpRequest, "login");
       if (httpRequest.data.code === 200) {
-        store.commit('user/SET_TOKEN', httpRequest.data.data.token)
-        store.commit('user/SET_USER_INFO', httpRequest.data.data.user)
-        store.commit('user/SET_REAL_NAME', httpRequest.data.data.user.realName)
+        store.commit("user/SET_TOKEN", httpRequest.data.data.token);
+        store.commit("user/SET_USER_INFO", httpRequest.data.data.user);
+        store.commit("user/SET_REAL_NAME", httpRequest.data.data.user.realName);
         const encryptText: string = encrypt(
           JSON.stringify({
             username: formState.username,
             password: formState.password,
           })
-        )
-        localStorage.setItem('encryptText', encryptText)
-        message.success('登录成功')
+        );
+        localStorage.setItem("encryptText", encryptText);
+        message.success("登录成功");
         router.push({
-          name: 'Home',
-        })
-        return
+          name: "Home",
+        });
+        return;
       }
 
-      rememberAcount.value = false
-      localStorage.removeItem('isRememberAcount')
+      rememberAcount.value = false;
+      localStorage.removeItem("isRememberAcount");
 
-      message.error(httpRequest.data.msg)
-    }
+      message.error(httpRequest.data.msg);
+    };
 
     const enterPage = (routeName: string) => {
-      localStorage.clear()
+      localStorage.clear();
       router.push({
         name: routeName,
-      })
-    }
+      });
+    };
 
     return {
       formState,
@@ -125,13 +144,13 @@ export default defineComponent({
       submitDisabled,
       rememberAcount,
       enterPage,
-    }
+    };
   },
   components: {
     UserOutlined,
     LockOutlined,
   },
-})
+});
 </script>
 <style scoped lang="less">
 #login-form-box {
@@ -244,4 +263,3 @@ export default defineComponent({
   }
 }
 </style>
-
